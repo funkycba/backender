@@ -4,19 +4,54 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   // find all products
+  try {
+    const prodData = await Product.findAll({
+      include: [{ model: Category, Tag }],
+    });
+      // be sure to include its associated Products
+      res.status(200).json(prodData);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   // be sure to include its associated Category and Tag data
 });
 
 // get one product
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
+    try {
+      const prodData = await Product.findByPk(req.params.id, {
+        include: [{ model: Category, Tag }],
+      });
+  
+      if (!prodData) {
+        res.status(404).json({ message: 'No product found with that id!' });
+        return;
+      }
+  
+      res.status(200).json(prodData);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
+  
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
-});
+
 
 // create new product
-router.post('/', (req, res) => {
+// router.post('/', async (req, res) => {
+//   try {
+//     const prodData = await Product.create({
+//       product_id: req.body.product_id,
+
+//     });
+//     res.status(400).json(prodData);
+//   } catch (err) {
+//       res.status(400).json(err);
+//     }
+//   }
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -45,7 +80,7 @@ router.post('/', (req, res) => {
       console.log(err);
       res.status(400).json(err);
     });
-});
+
 
 // update product
 router.put('/:id', (req, res) => {
@@ -92,8 +127,24 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value
+  try {
+    const prodData = await Product.destroy({
+      where: {
+        product_id: req.params.product_id,
+      },
+    });
+
+    if (!prodData) {
+      res.status(404).json({ message: 'No product found with that id!' });
+      return;
+    }
+
+    res.status(200).json(prodData);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
