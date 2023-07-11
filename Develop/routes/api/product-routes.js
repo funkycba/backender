@@ -41,17 +41,17 @@ router.get('/:id', async (req, res) => {
 
 
 // create new product
-// router.post('/', async (req, res) => {
-//   try {
-//     const prodData = await Product.create({
-//       product_id: req.body.product_id,
+router.post('/', async (req, res) => {
+  try {
+    const prodData = await Product.create({
+      product_id: req.body.product_id,
 
-//     });
-//     res.status(400).json(prodData);
-//   } catch (err) {
-//       res.status(400).json(err);
-//     }
-//   }
+    });
+    res.status(400).json(prodData);
+  } catch (err) {
+      res.status(400).json(err);
+    }
+  
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -81,7 +81,7 @@ router.get('/:id', async (req, res) => {
       res.status(400).json(err);
     });
 
-
+  })
 // update product
 router.put('/:id', (req, res) => {
   // update product data
